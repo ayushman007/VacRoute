@@ -40,9 +40,7 @@ Home Page
 ![App Screenshot](https://i.imgur.com/Bi67MH6.png)
 
 
-## Contributors
-Shayan Debroy
-Diya Karmakar
+
 
 
 
@@ -110,8 +108,5 @@ Diya Karmakar
 
 **API:** COWIN API, Google Maps API, Mapquest API
   
-## Feedback
-
-If you have any feedback, please reach out to us at debroyshayan@gmail.com
 
   
