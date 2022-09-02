@@ -1,0 +1,143 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<style>
+
+  html{
+    scroll-behavior: smooth;
+
+  }
+  .text{
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    /* margin-bottom: 0.3rem; */
+    border: 1px solid #ccced3;
+    border-radius:4px
+   
+  }
+</style>
+
+
+<body>
+
+   <!-- navbar start -->
+  <div class="topnav sticky">
+    <a href="/">Locate</a>
+    <a href="{% url 'about' %}">About</a>
+  </div>
+  <!-- navbar end -->
+  
+
+
+<section class="content">
+  
+  <div style="margin-top: 2rem; margin-bottom: 1rem;  padding: 2rem; width:80%" class="card border center" id="map-card">
+    <div style="margin-bottom: 20px;" id="maptext" class="card-header">
+        <strong style="font-size: large; color: #5271ff">Route</strong>
+    </div>
+    <div class="card_body">
+
+        <div  id="map"></div>
+
+
+
+        <div style="margin-top:2rem;" class="center btn-div">
+          <div class="lg">
+              
+              <a class="btn btn-normal block-btn" href="#details" >Details</a>
+          </div>
+        </div>
+    </div>
+
+  </div>
+
+
+  
+  <section id="details">
+    <div style="margin-top: 2rem; margin-bottom: 1rem;  padding: 3rem; width:60%;" class="card border center" id="map-card">
+      <div style="margin-bottom: 20px;" id="maptext" class="card-header">
+        Details
+      </div>
+       <div class="card_body">
+         {% if details %}
+          {% for i, key in details.items %}
+          <div class="text">
+            {% if i == 'Vaccine' %}
+
+              
+              <p style="color: #5271ff;"><strong> <img style="margin-bottom: -0.2rem; margin-right:0.3rem" src="https://img.icons8.com/external-vitaliy-gorbachev-blue-vitaly-gorbachev/20/000000/external-jar-virus-transmission-vitaliy-gorbachev-blue-vitaly-gorbachev.png"/>{{i}} </strong>: {{key}} </p>
+
+            {% elif i == 'Available capacity dose one' %}
+            <p style="color: #5271ff;"><strong> <img style="margin-bottom: -0.2rem; margin-right:0.4rem" src="https://img.icons8.com/external-vitaliy-gorbachev-blue-vitaly-gorbachev/20/000000/external-vaccine-baby-vitaliy-gorbachev-blue-vitaly-gorbachev.png"/>{{i}} </strong>: {{key}} </p>
+
+            {% elif i == 'Available capacity dose two' %}
+            <p style="color: #5271ff;"><strong> <img style="margin-bottom: -0.2rem; margin-right:0.4rem" src="https://img.icons8.com/external-vitaliy-gorbachev-blue-vitaly-gorbachev/20/000000/external-vaccine-baby-vitaliy-gorbachev-blue-vitaly-gorbachev.png"/>{{i}} </strong>: {{key}} </p>
+
+            {% elif i == 'Name' %}
+            <p style="color: #5271ff;"><strong> <img style="margin-bottom: -0.2rem; margin-right:0.5rem" src="https://img.icons8.com/external-inipagistudio-mixed-inipagistudio/20/000000/external-immunity-immunization-awareness-inipagistudio-mixed-inipagistudio.png"/>{{i}} </strong>: {{key}} </p>
+            {% endif %}
+            
+          </div>
+          {% endfor %}
+
+          {% else %}
+          <p>No details available</p>
+         {% endif %}
+        
+        
+        
+       </div>
+
+  </div>
+  </section>
+  <br>
+  <div style="padding-bottom:1rem" id="hero" class="container center">
+    <center>
+      <img style="width: 900px; max-width: 60vw; max-height: 40vh" src="{% static 'route.svg' %}" alt="">
+    </center>
+    <!-- <h1 class="heading" style="text-align: center">Check the route below</h1> -->
+  </div>
+  <br><br>
+</section>
+
+
+  
+  
+  <script src="{% static 'my.js' %}"></script>
+  
+
+
+  <script src="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css"/>
+
+
+  <!-- show route api call for mapquest -->
+    <script type="text/javascript">
+      window.onload = function() {
+        L.mapquest.key = 'S8d7L47mdyAG5nHG09dUnSPJjreUVPeC';
+        // 28.7041° N, 77.1025°
+        // 26.1445° N, 91.7362
+        var map = L.mapquest.map('map', {
+          center: [{{end_lat}}, {{end_long}}],
+          layers: L.mapquest.tileLayer('map'),
+          zoom: 13
+        });
+
+        L.mapquest.directions().route({
+          start:[ {{start_lat}}, {{start_long}}],
+          end:[{{end_lat}}, {{end_long}}]
+        });
+      }
+    </script>
+</body>
+</html>

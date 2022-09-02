@@ -1,0 +1,226 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    
+</head>
+
+<body>
+  <!-- navbar start -->
+  <div class="topnav sticky">
+    <a href="/">Locate</a>
+    <a href="{% url 'about' %}">About</a>
+  </div>
+  <!-- navbar end -->
+
+
+
+  <!-- section content start -->
+  <section class="content">
+
+
+     <!-- hero section start-->
+      <div id="hero" class="container center">
+        <center>
+          <img style="width: 900px; max-width: 60vw; max-height: 40vh" src="{% static 'location.svg' %}" alt="">
+        </center>
+        <h1 class="heading" style="text-align: center">Select vaccination center</h1>
+      </div>
+     <!-- hero section end-->
+  
+  
+  
+      <p style="display: none;" id="centers">{{centers_list}}</p>
+  
+  
+      <!-- show map button start -->
+      <div class="center btn-div">
+        
+  
+        <div class="lg">
+          <button class="btn btn-normal block-btn" style="display: block;" type="button" id="trigger" onclick="getLocation()">Show Map</button>
+        </div>
+  
+      </div>
+      <!-- show map button end -->
+      
+  
+      <!-- show map card start -->
+      <div style="margin-top: 2rem; margin-bottom: 1rem;  padding: 2rem; width:80%" class="card border center" id="map-card">
+          <div style="margin-bottom: 20px;" id="maptext" class="card-header">
+            <strong style="font-size: large; color: #5271ff">
+              Click a marker(Zoom Out if not showing)</strong>
+          </div>
+          <div class="card_body">
+      
+              <div style="display:none"  id="map"></div>
+          </div>
+      
+      </div>
+      <!-- show map card end -->
+
+
+  </section>
+   <!-- section content end -->
+    
+
+
+
+
+
+
+
+
+
+      <script src="{% static 'my.js' %}"></script>
+
+
+      <!-- calling geolocation for current location -->
+      <script>
+        function getLocation() {
+        var x = document.getElementById("map");
+        var y = document.getElementById("maptext");
+        
+    
+      
+        x.style.display = "block";
+        document.getElementById("hero").style.display = "none";
+       
+        
+        
+    
+        console.log("Hello");
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(initMap);
+          console.log("Hello");
+        } 
+      
+        }
+    
+    
+    </script>
+    
+   
+    
+    
+     <!-- Map Marker -->
+    <script>
+        // var centers = document.getElementById("centers").innerText;
+        // console.log(JSON.parse(centers));
+        // centers_obj = JSON.parse(centers)
+    
+   
+      function initMap(position){
+        console.log(position);
+          // maps options
+          var options = {
+              {% if pin %}
+              zoom: 8,
+              {% else %}
+              zoom: 12,
+              {% endif %}
+            //   zoom: 8,
+              center:{lat:position.coords.latitude, lng:position.coords.longitude}
+          }
+          var map = new google.maps.Map(document.getElementById('map'),options);
+          console.log("map");
+    
+    
+              
+    
+              
+    
+            
+            
+    
+        
+          // Array Of markers
+          var markers = [
+              
+          {% for i, key in centers_list.items %}
+
+          {
+              coords:{
+                  {% for x,y in key.items  %}
+                  {% if forloop.counter == 3  %}
+                  {{x}}:{{y}},
+                  {% elif forloop.counter == 4 %}
+                  
+                  {{x}}:{{y}},
+                  {% endif %}
+                  {% endfor %}
+                },
+
+
+                
+              iconImage:"https://img.icons8.com/external-inipagistudio-mixed-inipagistudio/44/000000/external-syringe-fatigue-inipagistudio-mixed-inipagistudio.png",
+              content: '<p style="font-weight:bold">Center : {{i}} </p> <br> <center><a style="text-decoration:none" class="btn btn-normal block-btn" href ="/get_route' {% for x,y in key.items  %} +'/{{y}}' {% endfor %}+ '/{{lat}}/{{longi}}' +'">Route  <img style="margin-left:0.1rem; margin-top:0.2rem; margin-bottom:-0.2rem" src="https://img.icons8.com/fluency/18/000000/route.png"/></a></center>'
+          },
+
+          {% endfor %}
+    
+    
+          ];
+          console.log("markers");
+
+          console.log(markers);
+         
+
+
+      
+    
+          for (var  i=0; i<markers.length;i++){
+              
+            addMarker(markers[i]);
+          }
+          
+          // add marker Function
+          var gmarkers = [];
+          var executed = false;
+          function addMarker(props){
+            
+            
+              var marker = new google.maps.Marker({
+             position :props.coords,
+               map:map,
+               
+    
+    
+           })
+            
+            // executed = true
+             
+           if(props.iconImage){
+               marker.setIcon(props.iconImage);
+    
+           }
+           if(props.content){
+              var infoWindow = new google.maps.InfoWindow({
+              content : props.content,
+          });
+          marker.addListener('click', function(){
+              infoWindow.open(map, marker );
+          })
+    
+           }
+    
+          }
+    
+    
+    
+    
+      }
+    </script>
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCGjsl4UqbYWGhKj9T_jTXvNAcln5TkUc&callback=initMap&libraries=&v=weekly"
+    defer
+    ></script>
+    
+</body>
+</html>
